@@ -9,24 +9,32 @@ import {Dialog} from '@reach/dialog'
 import {
   CircleButton,
   Button,
-  Spinner,
   FormGroup,
   Centered,
+  Spinner,
 } from './components/lib'
 import {useAuth} from './context/auth-context'
-import useCallbackStatus from './utils/use-callback-status'
 
 function LoginForm({onSubmit, buttonText}) {
-  const {isPending, isRejected, error, run} = useCallbackStatus()
+  const [isPending, setIsPending] = React.useState(false)
+  const [error, setError] = React.useState(null)
   function handleSubmit(event) {
     event.preventDefault()
     const {username, password} = event.target.elements
 
-    run(
-      onSubmit({
-        username: username.value,
-        password: password.value,
-      }),
+    setIsPending(true)
+    onSubmit({
+      username: username.value,
+      password: password.value,
+    }).then(
+      () => {
+        setIsPending(false)
+      },
+      e => {
+        setError(e)
+        setIsPending(false)
+        return Promise.reject(e)
+      },
     )
   }
 
@@ -57,7 +65,7 @@ function LoginForm({onSubmit, buttonText}) {
           {buttonText} {isPending ? <Spinner css={{marginLeft: 5}} /> : null}
         </Button>
       </div>
-      {isRejected ? (
+      {error ? (
         <div css={{color: 'red'}}>{error ? error.message : null}</div>
       ) : null}
     </form>

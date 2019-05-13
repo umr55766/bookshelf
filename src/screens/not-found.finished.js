@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
 
-// 🐨 get the Link component from '@reach/router'
+import {Link} from '@reach/router'
 
 function NotFound() {
   return (
@@ -13,12 +13,11 @@ function NotFound() {
         justifyContent: 'center',
       }}
     >
-      {/* 🐨 render a div here that mentions there's nothing here */}
-      {/* 🐨 render a <Link /> to take people home */}
+      <div>
+        Sorry... nothing here. <Link to="/">Go home</Link>
+      </div>
     </div>
   )
 }
 
 export default NotFound
-// const Finished = require('./not-found.finished.js')
-// export default Finished.default

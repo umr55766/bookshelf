@@ -6,7 +6,11 @@ import {Router, Link, Redirect} from '@reach/router'
 import * as mq from './styles/media-queries'
 import * as colors from './styles/colors'
 import {useAuth} from './context/auth-context'
-// 🐨 import all the screens here
+import ReadingListScreen from './screens/list'
+import FinishedBooksScreen from './screens/finished'
+import DiscoverBooksScreen from './screens/discover'
+import BookScreen from './screens/book'
+import NotFound from './screens/not-found'
 
 function AuthenticatedApp() {
   const {user, logout} = useAuth()
@@ -58,7 +62,6 @@ function AuthenticatedApp() {
   )
 }
 
-// Here's our styled version of @reach/router's <Link /> component
 const NavLink = styled(Link)({
   display: 'block',
   padding: '8px 15px 8px 10px',
@@ -103,47 +106,35 @@ function Nav(params) {
           },
         }}
       >
-        {/*
-          🐨 render a NavLink (each inside its own <li>) for the following routes:
-          "/list" "Reading List"
-          "/finished" "Finished Books"
-          "/discover" "Discover"
-
-          💰 a "NavLink" is our styled version of @reach/router's Link component
-          you can check it out above
-        */}
+        <li>
+          <NavLink to="/list">Reading List</NavLink>
+        </li>
+        <li>
+          <NavLink to="/finished">Finished Books</NavLink>
+        </li>
+        <li>
+          <NavLink to="/discover">Discover</NavLink>
+        </li>
       </ul>
     </nav>
   )
 }
 
-// 🦉 We don't have a home route ("/"). Instead, we take people directly to
-// their reading list ("/list")
-// 🐨 create a simple component called RedirectHome.
-// 🐨 return @reach/router's Redirect component to redirect to "/list"
-// 💰 <Redirect to="/list" />
-// ⚠️ there's currently a bit of a problem with this redirect. It works in the
-// final app but not quite right in this exercise. I'm not sure why and I'll try
-// to find the solution, but just know that if you get an error in the console
-// that's expected (for now).
+function RedirectHome() {
+  return <Redirect to="/list" />
+}
 
 function Routes() {
-  // 🐨 render the <Router> here with the following routes:
-  // "/" RedirectHome
-  // "/list" ReadingListScreen
-  // "/finished" FinishedBooksScreen
-  // "/discover" DiscoverBooksScreen
-  // "/book/:bookId" BookScreen
-  // default NotFound
-  //
-  // 💰 with @reach/router, instead of using a special <Route /> component you
-  // render the <Router> and each of its children is what you want rendered
-  // with a path prop. For example: <Router><Home path="/"></Router>
-  return <div>authenticated-app.js Routes TODO</div>
+  return (
+    <Router>
+      <RedirectHome path="/" />
+      <ReadingListScreen path="/list" />
+      <FinishedBooksScreen path="/finished" />
+      <DiscoverBooksScreen path="/discover" />
+      <BookScreen path="/book/:bookId" />
+      <NotFound default />
+    </Router>
+  )
 }
 
 export default AuthenticatedApp
-// const Finished = require('./authenticated-app.finished')
-// export default Finished.default
-
-/* eslint no-unused-vars:0 */

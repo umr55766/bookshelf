@@ -3,7 +3,6 @@ import {jsx} from '@emotion/core'
 
 import React from 'react'
 import {useAsync} from 'react-async'
-import {bootstrapAppData} from '../utils/bootstrap'
 import * as authClient from '../utils/auth-client'
 import {FullPageSpinner} from '../components/lib'
 
@@ -11,16 +10,10 @@ const AuthContext = React.createContext()
 
 function AuthProvider(props) {
   const [firstAttemptFinished, setFirstAttemptFinished] = React.useState(false)
-  const {
-    data = {user: null, listItems: []},
-    error,
-    isRejected,
-    isPending,
-    isSettled,
-    reload,
-  } = useAsync({
-    promiseFn: bootstrapAppData,
+  const {data, error, isRejected, isPending, isSettled, reload} = useAsync({
+    promiseFn: authClient.getUser,
   })
+  const {user} = data || {}
 
   React.useLayoutEffect(() => {
     if (isSettled) {
@@ -34,7 +27,7 @@ function AuthProvider(props) {
     }
     if (isRejected) {
       return (
-        <div css={{color: 'red'}}>
+        <div style={{color: 'red'}}>
           <p>Uh oh... There's a problem. Try refreshing the app.</p>
           <pre>{error.message}</pre>
         </div>
@@ -47,7 +40,7 @@ function AuthProvider(props) {
   const logout = () => authClient.logout().then(reload)
 
   return (
-    <AuthContext.Provider value={{data, login, logout, register}} {...props} />
+    <AuthContext.Provider value={{user, login, logout, register}} {...props} />
   )
 }
 

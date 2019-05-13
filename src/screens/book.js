@@ -1,32 +1,3 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
-
-import React from 'react'
-import {useAsync} from 'react-async'
-import debounceFn from 'debounce-fn'
-import {FaRegCalendarAlt} from 'react-icons/fa'
-import Tooltip from '@reach/tooltip'
-import * as mq from '../styles/media-queries'
-import * as colors from '../styles/colors'
-import {Spinner} from '../components/lib'
-import {
-  useListItemDispatch,
-  useSingleListItemState,
-  updateListItem,
-} from '../context/list-item-context'
-import Rating from '../components/rating'
-import * as bookClient from '../utils/books-client'
-import StatusButtons from '../components/status-buttons'
-
-function getBook({bookId}) {
-  return bookClient.read(bookId).then(data => data.book)
-}
-
-const formatDate = date =>
-  new Intl.DateTimeFormat('en-US', {month: 'short', year: '2-digit'}).format(
-    date,
-  )
-
 function BookScreen({bookId}) {
   const {data: book, isPending, isRejected, isResolved, error} = useAsync({
     promiseFn: getBook,
