@@ -1,23 +1,17 @@
 import React from 'react'
 import {useUser} from './context/user-context'
-import {FullPageSpinner} from './components/lib'
+// 💣 get rid of both of these...
+import AuthenticatedApp from './authenticated-app'
+import UnauthenticatedApp from './unauthenticated-app'
 
-const loadAuthenticatedApp = () => import('./authenticated-app')
-const AuthenticatedApp = React.lazy(loadAuthenticatedApp)
-const UnauthenticatedApp = React.lazy(() => import('./unauthenticated-app'))
+// 🐨 add a call to React.lazy to create lazily-loaded variables for AuthenticatedApp and UnauthenticatedApp
 
+// 💯 see if you can figure out how to pre-load the <AuthenticatedApp /> here
+// so that it's instantly ready when the user finishes logging in.
 function App() {
   const user = useUser()
-  // pre-load the authenticated side in the background while the user's
-  // filling out the login form.
-  React.useEffect(() => {
-    loadAuthenticatedApp()
-  }, [])
-  return (
-    <React.Suspense fallback={<FullPageSpinner />}>
-      {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
-    </React.Suspense>
-  )
+  // 🐨 wrap all of this in <React.Suspense> with the fallback set to <FullPageSpinner />
+  return user ? <AuthenticatedApp /> : <UnauthenticatedApp />
 }
 
 export default App
