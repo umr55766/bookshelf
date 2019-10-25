@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 // tested (for unit/integration level tests).
 jest.mock('../hacks')
 
-test('booting up the app from the index file does not break anything', async () => {
+test.skip('booting up the app from the index file does not break anything', async () => {
   // setup
   const div = document.createElement('div')
   div.setAttribute('id', 'root')

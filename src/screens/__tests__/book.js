@@ -8,13 +8,15 @@ import {
 } from '@testing-library/react'
 import faker from 'faker'
 import {buildUser, buildBook, buildListItem} from '../../../test/generate'
-import {bootstrapAppData} from '../../utils/bootstrap'
+import {useResource} from '../../utils/bootstrap'
 import {AuthProvider} from '../../context/auth-context'
 import {UserProvider} from '../../context/user-context'
 import {ListItemProvider} from '../../context/list-item-context'
 import BookScreen from '../book'
 
-jest.mock('../../utils/bootstrap')
+// we need to mock out the entire bootstrap module
+// so we don't make the eager fetch call in tests.
+jest.mock('../../utils/bootstrap', () => ({useResource: jest.fn()}))
 
 async function renderBookScreen({
   user = buildUser(),
@@ -22,10 +24,10 @@ async function renderBookScreen({
   book = buildBook({id: bookId}),
   listItem = buildListItem({owner: user, book}),
 } = {}) {
-  bootstrapAppData.mockResolvedValueOnce({
-    user,
-    listItems: [listItem].filter(Boolean),
-  })
+  useResource.mockReturnValue([
+    {user, listItems: [listItem].filter(Boolean)},
+    jest.fn(),
+  ])
   window.fetch.mockResolvedValueOnce({
     status: 200,
     async json() {
@@ -214,10 +216,7 @@ test('can mark a list item as read', async () => {
 test('shows an error message when the book fails to load', async () => {
   const user = buildUser()
 
-  bootstrapAppData.mockResolvedValueOnce({
-    user,
-    listItems: [],
-  })
+  useResource.mockReturnValue([{user, listItems: []}, jest.fn()])
 
   const testError = '__test_error__'
 

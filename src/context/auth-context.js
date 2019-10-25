@@ -2,46 +2,13 @@
 import {jsx} from '@emotion/core'
 
 import React from 'react'
-import {useAsync} from 'react-async'
-import {bootstrapAppData} from '../utils/bootstrap'
+import {useResource} from '../utils/bootstrap'
 import * as authClient from '../utils/auth-client'
-import {FullPageSpinner} from '../components/lib'
 
 const AuthContext = React.createContext()
 
 function AuthProvider(props) {
-  const [firstAttemptFinished, setFirstAttemptFinished] = React.useState(false)
-  const {
-    data = {user: null, listItems: []},
-    error,
-    isRejected,
-    isPending,
-    isSettled,
-    reload,
-  } = useAsync({
-    promiseFn: bootstrapAppData,
-  })
-
-  React.useLayoutEffect(() => {
-    if (isSettled) {
-      setFirstAttemptFinished(true)
-    }
-  }, [isSettled])
-
-  if (!firstAttemptFinished) {
-    if (isPending) {
-      return <FullPageSpinner />
-    }
-    if (isRejected) {
-      return (
-        <div css={{color: 'red'}}>
-          <p>Uh oh... There's a problem. Try refreshing the app.</p>
-          <pre>{error.message}</pre>
-        </div>
-      )
-    }
-  }
-
+  const [data, reload] = useResource()
   const login = form => authClient.login(form).then(reload)
   const register = form => authClient.register(form).then(reload)
   const logout = () => authClient.logout().then(reload)
