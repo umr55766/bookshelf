@@ -1,7 +1,9 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
 
-import {Link} from '@reach/router'
+import {useTransition} from 'react'
+import {Link, navigate} from '@reach/router'
+import * as booksClient from '../utils/books-client'
 import * as mq from '../styles/media-queries'
 import * as colors from '../styles/colors'
 import {useSingleListItemState} from '../context/list-item-context'
@@ -9,10 +11,18 @@ import StatusButtons from './status-buttons'
 import Rating from './rating'
 
 function BookRow({book}) {
+  const [startTransition] = useTransition({timeoutMs: 2000})
   const {title, author, coverImageUrl} = book
   const listItem = useSingleListItemState({
     bookId: book.id,
   })
+
+  function handleClick(event) {
+    startTransition(() => {
+      booksClient.createResource(book.id)
+      navigate(`/book/${book.id}`)
+    })
+  }
 
   return (
     <div
@@ -41,6 +51,9 @@ function BookRow({book}) {
           },
         }}
       >
+        <button type="button" onClick={handleClick}>
+          Go to book page
+        </button>
         <div
           css={{
             width: 140,

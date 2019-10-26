@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import {jsx} from '@emotion/core'
 
+import React from 'react'
 import styled from '@emotion/styled'
 import {Router, Link, Redirect} from '@reach/router'
 import * as mq from './styles/media-queries'
@@ -8,6 +9,7 @@ import * as colors from './styles/colors'
 import {ListItemProvider} from './context/list-item-context'
 import {useAuth} from './context/auth-context'
 import {useUser} from './context/user-context'
+import {Spinner} from './components/lib'
 import ReadingListScreen from './screens/list'
 import FinishedBooksScreen from './screens/finished'
 import DiscoverBooksScreen from './screens/discover'
@@ -129,16 +131,24 @@ function RedirectHome() {
 
 function Routes() {
   return (
-    <ListItemProvider>
-      <Router>
-        <RedirectHome path="/" />
-        <ReadingListScreen path="/list" />
-        <FinishedBooksScreen path="/finished" />
-        <DiscoverBooksScreen path="/discover" />
-        <BookScreen path="/book/:bookId" />
-        <NotFound default />
-      </Router>
-    </ListItemProvider>
+    <React.Suspense
+      fallback={
+        <div css={{marginTop: '2em', fontSize: '2em', textAlign: 'center'}}>
+          <Spinner />
+        </div>
+      }
+    >
+      <ListItemProvider>
+        <Router>
+          <RedirectHome path="/" />
+          <ReadingListScreen path="/list" />
+          <FinishedBooksScreen path="/finished" />
+          <DiscoverBooksScreen path="/discover" />
+          <BookScreen path="/book/:bookId" />
+          <NotFound default />
+        </Router>
+      </ListItemProvider>
+    </React.Suspense>
   )
 }
 

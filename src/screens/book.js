@@ -18,9 +18,9 @@ import Rating from '../components/rating'
 import * as bookClient from '../utils/books-client'
 import StatusButtons from '../components/status-buttons'
 
-function getBook({bookId}) {
-  return bookClient.read(bookId).then(data => data.book)
-}
+// function getBook({bookId}) {
+//   return bookClient.read(bookId).then(data => data.book)
+// }
 
 const formatDate = date =>
   new Intl.DateTimeFormat('en-US', {month: 'short', year: '2-digit'}).format(
@@ -28,29 +28,31 @@ const formatDate = date =>
   )
 
 function BookScreen({bookId}) {
-  const {data: book, isPending, isRejected, isResolved, error} = useAsync({
-    promiseFn: getBook,
-    bookId,
-  })
+  const [{book}] = bookClient.useResource(bookId)
+  // const {data: book, isPending, isRejected, isResolved, error} = useAsync({
+  //   promiseFn: getBook,
+  //   bookId,
+  // })
   const listItem = useSingleListItemState({bookId})
 
-  if (isPending) {
-    return (
-      <div css={{marginTop: '2em', fontSize: '2em', textAlign: 'center'}}>
-        <Spinner />
-      </div>
-    )
-  }
-  if (isRejected) {
-    return (
-      <div css={{color: 'red'}}>
-        <p>Oh no, there was an error.</p>
-        <pre>{error.message}</pre>
-      </div>
-    )
-  }
+  // if (isPending) {
+  //   return (
+  //     <div css={{marginTop: '2em', fontSize: '2em', textAlign: 'center'}}>
+  //       <Spinner />
+  //     </div>
+  //   )
+  // }
+  // if (isRejected) {
+  //   return (
+  //     <div css={{color: 'red'}}>
+  //       <p>Oh no, there was an error.</p>
+  //       <pre>{error.message}</pre>
+  //     </div>
+  //   )
+  // }
 
-  if (isResolved && !book) {
+  // if (isResolved && !book) {
+  if (!book) {
     return (
       <div css={{color: 'red'}}>
         <p>Hmmm... Something's not quite right. Please try another book.</p>
